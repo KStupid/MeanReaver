@@ -1,80 +1,71 @@
-# Meaning Retriever & Word Ranker
+# 📚 MeanReaver
+*Uncover the hidden vocabulary in your books!*
 
-This project is a Python-based tool designed to analyze text from PDF documents, filter words based on their CEFR (Common European Framework of Reference for Languages) proficiency levels, and retrieve definitions for selected words. It helps users identify and learn difficult vocabulary from their reading materials.
+## 🚀 What is this?
+Ever been reading a complex PDF and got stuck on difficult words? This tool is your personal vocabulary assistant! 
+It scans your PDF documents, filters out the easy words based on your proficiency level, and presents you with the challenging ones. You can then instantly get their definitions without leaving the terminal.
 
-## Features
+## ✨ Features
+- **📄 PDF Scanning**: Reads text directly from your PDF books.
+- **🧠 Smart Filtering**: Uses CEFR levels (A1-C2) to show only the words you *actually* need to learn.
+- **📖 Instant Dictionary**: Fetches meanings, parts of speech, and definitions on the fly.
+- **🧹 Auto-Clean**: Handles hyphenated words and weird formatting automatically.
+- **🔍 Search Anywhere**: Look up any word manually, right from the prompt.
 
-- **PDF Text Extraction:** Reads text directly from PDF files.
-- **Text Cleaning:** Automatically removes hyphens and normalizes text for better analysis.
-- **CEFR Level Analysis:** Uses `cefrpy` and `spacy` to analyze and filter words that are above a specified proficiency level (e.g., words harder than level 2).
-- **Dictionary Lookup:** Fetches definitions, parts of speech, and meanings using the Free Dictionary API.
-- **Interactive CLI:** Allows users to select pages and query specific words.
+## 🛠️ Prerequisites
+- Python 3.12+
+- `pip` (Python package manager)
 
-## Project Structure
+## ⚡ Quick Start
 
-- `main.py`: The entry point of the application. Handles user interaction and PDF processing.
-- `meaningretriver.py`: Fetches word definitions from the API.
-- `wordrank.py`: Filters words based on CEFR levels using `cefrpy`.
-- `show.py`: Displays the list of filtered words and handles user selection for meanings.
-- `remove_hyphen.py`: Cleans and normalizes raw text extracted from PDFs.
-- `show_particular_words.py`: Helper script to display detailed meanings of a single word.
-
-## Prerequisites
-
-- Python 3.12 or higher
-- pip (Python package installer)
-
-## Installation
-
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
-
-2.  **Create a virtual environment (recommended):**
-    ```bash
-    python -m venv porenv
-    source porenv/bin/activate  # On Windows use `porenv\Scripts\activate`
-    ```
-
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4.  **Download Spacy Model (if not installed automatically):**
-    The `requirements.txt` includes the direct link for `en_core_web_sm`, so it should install automatically. If not, run:
-    ```bash
-    python -m spacy download en_core_web_sm
-    ```
-
-## Usage
-
-Run the `main.py` script with the path to your PDF file and the desired CEFR difficulty threshold (integer).
-
+### 1. Clone & Enter
 ```bash
-python main.py <path_to_pdf> <cefr_level>
+git clone <your-repo-url>
+cd MeanReaver
 ```
 
-**Example:**
-
+### 2. Set up Environment
+It's best to keep things tidy with a virtual environment.
 ```bash
-python main.py data/orwell1984.pdf 3
+python -m venv porenv
+source porenv/bin/activate  # Windows: porenv\Scripts\activate
 ```
 
-- **`<path_to_pdf>`**: Path to the PDF file you want to analyze.
-- **`<cefr_level>`**: An integer representing the difficulty threshold. Words above this level will be shown.
-    - Levels are generally mapped internally by `cefrpy` (e.g., 0-5 or similar scale). Try starting with 2 or 3.
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+*Note: This will also download the necessary Spacy language model (`en_core_web_sm`).*
 
-### Interactive Controls
-Once the application is running:
-1.  Enter a **page number** to analyze text on that page.
-2.  The script will list words exceeding the specified difficulty level.
-3.  Select a word by its **index number** to see its definition.
-4.  Enter `-1` to go back or quit.
-5.  You can also directly type a word to search its meaning.
+### 4. Run it!
+Point the tool to your PDF and set a difficulty level.
+- **Level 1**: Easy (A1/A2)
+- **Level 5**: Advanced (C1/C2)
 
-## Notes
-- Ensure your PDF contains selectable text (not scanned images).
-- The `data/` folder is ignored by git to keep the repository light. Place your own PDFs there.
+```bash
+python main.py data/your_book.pdf 3
+```
+*Tip: Place your PDF files in the `data/` folder for easy access.*
+
+## 🎮 How to Use
+Once the app is running:
+
+1. **Enter a Page Number**: Type the page number you are reading to analyze it.
+   - *Example:* `42`
+2. **Review Words**: The tool lists words harder than your chosen level.
+3. **Get Definitions**: Type the **index number** next to the word to see what it means.
+   - *Example:* `5` (if that's the number next to 'ephemeral')
+4. **Manual Search**: Type any word directly text input if you're curious about a specific term.
+   - *Example:* `serendipity`
+5. **Navigation**: 
+   - Enter `-1` to go back or quit.
+
+## 📂 Project Structure
+- `main.py`: The brain of the operation.
+- `wordrank.py`: The filter (CEFR logic).
+- `meaningretriever.py`: The dictionary (API fetcher).
+- `show.py`: The display logic.
+- `data/`: Put your PDFs here!
+
+---
+*Happy Reading!* 🤓
