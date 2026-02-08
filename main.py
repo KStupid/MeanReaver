@@ -4,12 +4,14 @@ import wordrank
 import remove_hyphen
 import show
 import show_particular_words
-
 import spacy
+
+# Load the small English NLP model from spaCy
 nlp = spacy.load("en_core_web_sm")
 
-
 from cefrpy import CEFRSpaCyAnalyzer
+
+# Mapping for expanding English contractions to help the CEFR analyzer identify root words correctly
 ABBREVIATION_MAPPING = {
     "'m": "am",
     "'s": "is",
@@ -59,6 +61,7 @@ ABBREVIATION_MAPPING = {
     "we'd": "we had",  # or "we would"
     }
 
+# Entities to ignore during vocabulary analysis as they aren't generally "vocabulary" words
 ENTITY_TYPES_TO_SKIP_CEFR = {
     'QUANTITY', 'MONEY', 'LANGUAGE', 'LAW',
     'WORK_OF_ART', 'PRODUCT', 'GPE', 'LOC',
@@ -66,8 +69,11 @@ ENTITY_TYPES_TO_SKIP_CEFR = {
     'ORDINAL', 'CARDINAL', 'NORP', 'EVENT',
     'PERCENT'
     }
-analyzer = CEFRSpaCyAnalyzer(entity_types_to_skip=ENTITY_TYPES_TO_SKIP_CEFR,abbreviation_mapping=ABBREVIATION_MAPPING)
 
+# Initialize the CEFR analyzer with the custom mapping and skip list
+analyzer = CEFRSpaCyAnalyzer(entity_types_to_skip=ENTITY_TYPES_TO_SKIP_CEFR, abbreviation_mapping=ABBREVIATION_MAPPING)
+
+# Validate command line arguments
 if len(sys.argv) != 3:
     print("Usage: python main.py <file_path> <CEFR_level>\nExample: python main.py book.pdf 5")
     sys.exit(1)
@@ -79,12 +85,19 @@ except ValueError:
     print("Error: CEFR_level must be an integer.")
     sys.exit(1)
 
-book=fitz.open(file)
+# Open the PDF document
+try:
+    book = fitz.open(file)
+except Exception as e:
+    print(f"Error opening PDF: {e}")
+    sys.exit(1)
+
+# Main interaction loop
 while True:
     pageno = input("Enter the page no (starting from 1)\nTo quit, press (-1)\nOr enter a word: ")
 
-    # Try to interpret the input as an integer
     try:
+        # If the input is an integer, treat it as a page number request
         pageno_int = int(pageno)
 
         if pageno_int == -1:
@@ -95,10 +108,13 @@ while True:
             text = page.get_text("text")
 
             if text:
+                # Clean text: remove hyphens and formatting weirdness
                 text = remove_hyphen.hr(text)
-                words = wordrank.words_or_text_to_CEFR(nlp,analyzer,text, level)
+                # Extract words that are above the user's proficiency level
+                words = wordrank.words_or_text_to_CEFR(nlp, analyzer, text, level)
 
                 if words:
+                    # Display the list of difficult words to the user
                     show.s_r(words)
                 else:
                     print("Looks like you know everything from this page!\n")
@@ -107,8 +123,8 @@ while True:
         else:
             print("#### CHECK YOUR DAMN EYES #### Page number out of range.")
     
-    # If not an integer, assume it's a word
     except ValueError:
+        # If input is not an integer, assume the user is searching for a specific word
         print(f"\nword\t:{pageno}\n")
         show_particular_words.wordmeaning(pageno)
         input("\nPress Enter to continue...")
